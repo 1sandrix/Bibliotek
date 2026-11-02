@@ -1,4 +1,4 @@
-
+import sqlite3
 import random
 from datetime import datetime, date
 
@@ -29,4 +29,23 @@ def registrera_anvandare():
 
     print("Personnummer:", personnummer)
 
-    return fornamn, efternamn, fodelsedatum, personnummer, alder
+    
+    conn = sqlite3.connect("bibliotek.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    INSERT INTO Users
+    (fornamn, efternamn, fodelsedatum, personnummer, alder)
+    VALUES (?, ?, ?, ?, ?)
+    """, (fornamn, efternamn, fodelsedatum, personnummer, alder))
+
+    conn.commit()
+
+    user_id = cursor.lastrowid
+
+    conn.close()
+
+    print("Du är nu registrerad i biblioteket.")
+
+    
+    return user_id
